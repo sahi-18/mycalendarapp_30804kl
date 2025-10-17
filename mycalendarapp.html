@@ -1,0 +1,60 @@
+import React, { useState } from 'react';
+
+const events = [
+  { date: '2025-10-10', title: 'Meeting', description: 'Discuss project.' },
+  { date: '2025-10-15', title: 'Doctor', description: 'Checkup.' },
+  { date: '2025-10-20', title: 'Conference', description: 'Attend tech event.' }
+];
+
+const Calendar = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const [selectedDate, setSelectedDate] = useState(null);
+  const formatDate = d => new Date(year, month, d).toISOString().slice(0, 10);
+  const dayEvents = events.filter(e => e.date === selectedDate);
+
+  return (
+    <div style={{ maxWidth: 300, margin: 'auto', fontFamily: 'Arial' }}>
+      <h3>{today.toLocaleString('default', { month: 'long' })} {year}</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 3 }}>
+        {[...Array(daysInMonth)].map((_, i) => {
+          const day = i + 1;
+          const dateStr = formatDate(day);
+          return (
+            <div
+              key={day}
+              onClick={() => setSelectedDate(dateStr)}
+              style={{
+                padding: 8,
+                textAlign: 'center',
+                cursor: 'pointer',
+                backgroundColor: selectedDate === dateStr ? '#007bff' : '#eee',
+                color: selectedDate === dateStr ? 'white' : 'black',
+                borderRadius: 4,
+                userSelect: 'none'
+              }}
+            >
+              {day}
+            </div>
+          );
+        })}
+      </div>
+      {selectedDate && (
+        <div style={{ marginTop: 15 }}>
+          <h4>Events on {selectedDate}:</h4>
+          {dayEvents.length ? dayEvents.map((ev, idx) => (
+            <div key={idx} style={{ marginBottom: 8 }}>
+              <strong>{ev.title}</strong>
+              <p style={{ margin: 0 }}>{ev.description}</p>
+            </div>
+          )) : <p>No events.</p>}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Calendar;
